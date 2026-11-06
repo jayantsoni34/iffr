@@ -58,6 +58,12 @@ const roundSchema = new mongoose.Schema({
     lat: { type: Number, default: null },
     lng: { type: Number, default: null },
   },
+  media: {
+    image1: { type: String, default: "" },
+    image2: { type: String, default: "" },
+    image3: { type: String, default: "" },
+    video1: { type: String, default: "" },
+  },
 }, { timestamps: true });
 
 const taskSchema = new mongoose.Schema({
@@ -226,9 +232,11 @@ app.post("/tasks/:taskId/round", async (req, res) => {
     const updatedTask = await Task.findByIdAndUpdate(
       taskId,
       {
+        media: req.body.media || {},
         $push: { rounds: round },
         $set: {
           taskStatus: round.status,                       // ✅ status only: "Resolved"
+          additionalStatus: round.additionalStatus || "",
           additionalStatus: round.additionalStatus || "",
           purchaseDate: round.dop || round.purchaseDate || "",   // ✅ here
           serialNumber: round.serial || " " || "",   // ✅ here
